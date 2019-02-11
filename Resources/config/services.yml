@@ -8,12 +8,14 @@ services:
         resource: '../../{Repository,DataFixtures,Command,Validator,Controller}'
 
     pintushi_search.index:
-        class:  Pintushi\Bundle\SearchBundle\Engine\Indexer
+        alias: Pintushi\Bundle\SearchBundle\Engine\Indexer
+
+    Pintushi\Bundle\SearchBundle\Engine\Indexer:
         arguments:
             - '@pintushi_search.search.engine'
             - '@pintushi_search.mapper'
             - '@Pintushi\Bundle\SearchBundle\Security\SecurityProvider'
-            - '@pintushi_security.search.acl_helper'
+            - '@Pintushi\Bundle\SearchBundle\Utils\AclHelper'
             - '@event_dispatcher'
 
     Pintushi\Bundle\SearchBundle\Security\SecurityProvider:
@@ -24,17 +26,22 @@ services:
 
     pintushi_search.mapper:
         class: 'Pintushi\Bundle\SearchBundle\Engine\ObjectMapper'
-        arguments: ['@event_dispatcher', '%pintushi_search.entities_config%']
+        arguments: ['@event_dispatcher']
         calls:
             - [setMappingProvider, ['@Pintushi\Bundle\SearchBundle\Provider\SearchMappingProvider']]
             - [setPropertyAccessor, ['@property_accessor']]
+
+    Pintushi\Bundle\SearchBundle\Utils\AclHelper:
+        arguments:
+            - '@Pintushi\Bundle\SearchBundle\Provider\SearchMappingProvider'
+            - '@pintushi_security.token_accessor'
+            - '@pintushi_security.orm.ownership_sql_walker_builder'
+            - '@pintushi_security.owner.ownership_metadata_provider.chain'
 
     Pintushi\Bundle\SearchBundle\Provider\SearchMappingProvider:
         arguments:
             - '@event_dispatcher'
             - '@pintushi_search.cache.mapping_configuration'
-        calls:
-            - [setMappingConfig, ['%pintushi_search.entities_config%']]
 
     pintushi_search.cache.mapping_configuration:
         public: false
@@ -43,9 +50,6 @@ services:
         parent: doctrine_cache.abstract.chain
         calls:
             - [ setNamespace, [ 'pintushi_search_mapping_configuration' ] ]
-
-    Pintushi\Bundle\SearchBundle\Engine\TextFilteredObjectMapper:
-        parent: pintushi_search.mapper
 
     Pintushi\Bundle\SearchBundle\Provider\EntityNameResolver:
         arguments:

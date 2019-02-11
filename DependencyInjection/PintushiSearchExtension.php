@@ -9,6 +9,7 @@ use Symfony\Component\Config\FileLocator;
 use Oro\Component\Config\Loader\CumulativeConfigLoader;
 use Oro\Component\Config\Loader\YamlCumulativeFileLoader;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
+use Pintushi\Bundle\SearchBundle\Provider\SearchMappingProvider;
 
 class PintushiSearchExtension extends Extension implements PrependExtensionInterface
 {
@@ -42,12 +43,12 @@ class PintushiSearchExtension extends Extension implements PrependExtensionInter
         $container->setParameter('pintushi_search.engine', $config['engine']);
         $container->setParameter('pintushi_search.engine_parameters', $config['engine_parameters']);
         $container->setParameter('pintushi_search.log_queries', $config['log_queries']);
-        $this->setEntitiesConfigParameter($container, $config[EntitiesConfigConfiguration::ROOT_NODE]);
         $container->setParameter('pintushi_search.twig.item_container_template', $config['item_container_template']);
-
 
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
+
+        $this->setEntitiesConfig($container, $config[EntitiesConfigConfiguration::ROOT_NODE]);
 
         $ymlLoader = new YamlCumulativeFileLoader('Resources/config/app/search_engine/' . $config['engine'] . '.yml');
         $engineLoader = new CumulativeConfigLoader('pintushi_search', $ymlLoader);
@@ -84,12 +85,12 @@ class PintushiSearchExtension extends Extension implements PrependExtensionInter
     /**
      * @param ContainerBuilder $container
      * @param array $config
-     * @deprecated since 1.9, will be removed after 1.11
-     * Please use pintushi_search.provider.search_mapping service for mapping config
      */
-    protected function setEntitiesConfigParameter(ContainerBuilder $container, array $config)
+    protected function setEntitiesConfig(ContainerBuilder $container, array $config)
     {
-        $container->setParameter('pintushi_search.entities_config', $config);
+        $searchMappingProviderDef = $container->getDefinition(SearchMappingProvider::class);
+
+        $searchMappingProviderDef->addMethodCall('setMappingConfig', [$config]);
     }
 
      /**

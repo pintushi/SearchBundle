@@ -19,12 +19,10 @@ class ObjectMapper extends AbstractMapper
 {
     /**
      * @param EventDispatcherInterface $dispatcher
-     * @param                          $mappingConfig
      */
-    public function __construct(EventDispatcherInterface $dispatcher, $mappingConfig)
+    public function __construct(EventDispatcherInterface $dispatcher)
     {
         $this->dispatcher    = $dispatcher;
-        $this->mappingConfig = $mappingConfig;
     }
 
     /**
@@ -316,8 +314,7 @@ class ObjectMapper extends AbstractMapper
     protected function clearTextValue($fieldName, $value)
     {
         if (strpos($fieldName, Indexer::TEXT_ALL_DATA_FIELD) === 0) {
-            $value = $this->htmlTagHelper->stripTags((string)$value);
-            $value = $this->htmlTagHelper->stripLongWords($value);
+            //@todo: strip sensitive charaters
         }
 
         return $value;

@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Pintushi\Bundle\SearchBundle\Engine\Indexer;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /** Get advanced search result.
 
