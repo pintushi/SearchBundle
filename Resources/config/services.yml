@@ -1,0 +1,53 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    Pintushi\Bundle\SearchBundle\:
+        resource: '../../{Repository,DataFixtures,Command,Validator,Controller}'
+
+    pintushi_search.index:
+        class:  Pintushi\Bundle\SearchBundle\Engine\Indexer
+        arguments:
+            - '@pintushi_search.search.engine'
+            - '@pintushi_search.mapper'
+            - '@Pintushi\Bundle\SearchBundle\Security\SecurityProvider'
+            - '@pintushi_security.search.acl_helper'
+            - '@event_dispatcher'
+
+    Pintushi\Bundle\SearchBundle\Security\SecurityProvider:
+        public:  false
+        arguments:
+            - "@security.authorization_checker"
+            - "@pintushi_security.entity_security_metadata_provider"
+
+    pintushi_search.mapper:
+        class: 'Pintushi\Bundle\SearchBundle\Engine\ObjectMapper'
+        arguments: ['@event_dispatcher', '%pintushi_search.entities_config%']
+        calls:
+            - [setMappingProvider, ['@Pintushi\Bundle\SearchBundle\Provider\SearchMappingProvider']]
+            - [setPropertyAccessor, ['@property_accessor']]
+
+    Pintushi\Bundle\SearchBundle\Provider\SearchMappingProvider:
+        arguments:
+            - '@event_dispatcher'
+            - '@pintushi_search.cache.mapping_configuration'
+        calls:
+            - [setMappingConfig, ['%pintushi_search.entities_config%']]
+
+    pintushi_search.cache.mapping_configuration:
+        public: false
+        autowire: false
+        autoconfigure: false
+        parent: doctrine_cache.abstract.chain
+        calls:
+            - [ setNamespace, [ 'pintushi_search_mapping_configuration' ] ]
+
+    Pintushi\Bundle\SearchBundle\Engine\TextFilteredObjectMapper:
+        parent: pintushi_search.mapper
+
+    Pintushi\Bundle\SearchBundle\Provider\EntityNameResolver:
+        arguments:
+            - '%pintushi_search.entity_name_format.default%'
+            - '%pintushi_search.entity_name_formats%'

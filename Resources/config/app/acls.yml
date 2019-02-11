@@ -1,0 +1,6 @@
+acls:
+    pintushi_search:
+        type: action
+        label: '查询'
+        group_name: ""
+        category: "entity"

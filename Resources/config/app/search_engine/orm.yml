@@ -1,0 +1,17 @@
+services:
+    pintushi_search.search.engine:
+        class: Pintushi\Bundle\SearchBundle\Engine\Orm
+        arguments:
+            - '@doctrine'
+            - '@pintushi_search.mapper'
+            - '@event_dispatcher'
+        calls:
+            - [setLogQueries, ['%pintushi_search.log_queries%']]
+
+    pintushi_search.search.engine.indexer:
+        class: Pintushi\Bundle\SearchBundle\Engine\OrmIndexer
+        arguments:
+            - '@doctrine'
+            - '@Pintushi\Bundle\SecurityBundle\ORM\DoctrineHelper'
+            - '@pintushi_search.text_filtered_mapper'
+            - '@oro_entity.entity_name_resolver'
