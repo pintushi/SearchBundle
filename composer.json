@@ -7,8 +7,8 @@
         "php": "7.1.*",
         "symfony/symfony": "^4.0",
         "jms/serializer-bundle": "^1.13",
-        "oro/config": "dev-master",
-        "oro/config-bundle": "dev-master",
+        "oro/config": "^1.0@dev",
+        "pintushi/config-bundle": "^1.0@dev",
         "nesbot/carbon": "^2.0"
     },
     "autoload": {
