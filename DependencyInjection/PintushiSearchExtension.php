@@ -57,9 +57,6 @@ class PintushiSearchExtension extends Extension implements PrependExtensionInter
         foreach ($engineResources as $engineResource) {
             $loader->load($engineResource->path);
         }
-
-        $container->setParameter('pintushi_search.entity_name_formats', $config['entity_name_formats']);
-        $container->setParameter('pintushi_search.entity_name_format.default', 'full');
     }
 
      /**

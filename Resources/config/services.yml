@@ -50,8 +50,3 @@ services:
         parent: doctrine_cache.abstract.chain
         calls:
             - [ setNamespace, [ 'pintushi_search_mapping_configuration' ] ]
-
-    Pintushi\Bundle\SearchBundle\Provider\EntityNameResolver:
-        arguments:
-            - '%pintushi_search.entity_name_format.default%'
-            - '%pintushi_search.entity_name_formats%'

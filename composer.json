@@ -9,6 +9,8 @@
         "jms/serializer-bundle": "^1.13",
         "oro/config": "^1.0@dev",
         "pintushi/config-bundle": "^1.0@dev",
+        "pintushi/security-bundle": "^1.0@dev",
+        "pintushi/entity-bundle": "^1.0@dev",
         "nesbot/carbon": "^2.0"
     },
     "autoload": {

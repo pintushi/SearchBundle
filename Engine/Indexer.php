@@ -8,7 +8,7 @@ use Pintushi\Bundle\SearchBundle\Query\Mode;
 use Pintushi\Bundle\SearchBundle\Query\Query;
 use Pintushi\Bundle\SearchBundle\Query\Result;
 use Pintushi\Bundle\SearchBundle\Security\SecurityProvider;
-use Pintushi\Bundle\SecurityBundle\Search\AclHelper;
+use Pintushi\Bundle\SearchBundle\Utils\AclHelper;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**

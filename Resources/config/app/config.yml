@@ -1,5 +1,0 @@
-pintushi_search:
-    entity_name_formats:
-        full:
-            fallback: short
-        short: ~

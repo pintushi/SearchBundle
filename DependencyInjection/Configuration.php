@@ -131,13 +131,4 @@ class Configuration implements ConfigurationInterface
 
         return $treeBuilder;
     }
-
-    private function entityNameFormats()
-    {
-        $builder = new TreeBuilder();
-
-        $node = $builder->root(self::ROOT_NODE);
-
-
-    }
 }
