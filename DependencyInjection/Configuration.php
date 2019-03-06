@@ -36,7 +36,7 @@ class Configuration implements ConfigurationInterface
                     ->defaultFalse()
                 ->end()
                 ->scalarNode('item_container_template')
-                    ->defaultValue('PintushiSearchBundle:Datagrid:itemContainer.html.twig')
+                    ->defaultValue('PintushiSearchBundle:Grid:itemContainer.html.twig')
                 ->end()
                 ->append($entitiesConfigConfiguration->getEntitiesConfigurationNode(new TreeBuilder()))
                 ->arrayNode('entity_name_formats')

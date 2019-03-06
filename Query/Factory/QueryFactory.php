@@ -2,7 +2,7 @@
 
 namespace Pintushi\Bundle\SearchBundle\Query\Factory;
 
-use Pintushi\Bundle\DataGridBundle\Datagrid\DatagridInterface;
+use Pintushi\Bundle\DataGridBundle\Grid\GridInterface;
 use Pintushi\Bundle\SearchBundle\Engine\Indexer;
 use Pintushi\Bundle\SearchBundle\Query\IndexerQuery;
 
