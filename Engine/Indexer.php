@@ -162,6 +162,8 @@ class Indexer
      */
     public function simpleSearch($searchString, $offset = 0, $maxResults = 0, $from = null, $page = 0)
     {
+        var_dump(func_get_args());
+
         $query = $this->getSimpleSearchQuery($searchString, $offset, $maxResults, $from, $page);
 
         return $this->query($query);

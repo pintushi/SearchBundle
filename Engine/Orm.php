@@ -8,6 +8,7 @@ use Pintushi\Bundle\SearchBundle\Query\LazyResult;
 use Pintushi\Bundle\SearchBundle\Query\Query;
 use Pintushi\Bundle\SearchBundle\Query\Result\Item as ResultItem;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Pintushi\Bundle\SearchBundle\Entity\Item;
 
 /**
  * ORM standard search engine
@@ -107,7 +108,7 @@ class Orm extends AbstractEngine
             return $this->indexRepository;
         }
 
-        $this->indexRepository = $this->getIndexManager()->getRepository('PintushiSearchBundle:Item');
+        $this->indexRepository = $this->getIndexManager()->getRepository(Item::class);
 
         return $this->indexRepository;
     }
@@ -119,7 +120,7 @@ class Orm extends AbstractEngine
      */
     protected function getIndexManager()
     {
-        $this->indexManager = $this->registry->getManagerForClass('PintushiSearchBundle:Item');
+        $this->indexManager = $this->registry->getManagerForClass(Item::class);
 
         return $this->indexManager;
     }

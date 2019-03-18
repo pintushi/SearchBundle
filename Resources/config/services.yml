@@ -1,3 +1,11 @@
+parameters:
+    pintushi_search.entity.repository.search_index.class: Pintushi\Bundle\SearchBundle\Entity\Repository\SearchIndexRepository
+    pintushi_search.entity.item.class: Pintushi\Bundle\SearchBundle\Entity\Item
+    pintushi_search.drivers:
+        pdo_mysql: Pintushi\Bundle\SearchBundle\Engine\Orm\PdoMysql
+        pdo_pgsql: Pintushi\Bundle\SearchBundle\Engine\Orm\PdoPgsql
+    pintushi_search.provider.search_mapping.class: Pintushi\Bundle\SearchBundle\Provider\SearchMappingProvider
+
 services:
     _defaults:
         autowire: true
@@ -38,10 +46,29 @@ services:
             - '@pintushi_security.orm.ownership_sql_walker_builder'
             - '@pintushi_security.owner.ownership_metadata_provider.chain'
 
+    Pintushi\Bundle\SearchBundle\Entity\Repository\SearchIndexRepository:
+        class: '%pintushi_search.entity.repository.search_index.class%'
+        parent: pintushi_entity.abstract_repository
+        autowire: false
+        autoconfigure: false
+        public: true
+        arguments:
+            - '%pintushi_search.entity.item.class%'
+        calls:
+            - [setRegistry,  ['@doctrine']]
+            - [setDriversClasses, ['%pintushi_search.drivers%']]
+        tags:
+            - { name: 'doctrine.repository_service' }
+        lazy: true
+
+    pintushi_search.entity.repository.search_index: '@Pintushi\Bundle\SearchBundle\Entity\Repository\SearchIndexRepository'
+
     Pintushi\Bundle\SearchBundle\Provider\SearchMappingProvider:
         arguments:
             - '@event_dispatcher'
             - '@pintushi_search.cache.mapping_configuration'
+
+    pintushi_search.provider.search_mapping: '@Pintushi\Bundle\SearchBundle\Provider\SearchMappingProvider'
 
     pintushi_search.cache.mapping_configuration:
         public: false
@@ -50,3 +77,89 @@ services:
         parent: doctrine_cache.abstract.chain
         calls:
             - [ setNamespace, [ 'pintushi_search_mapping_configuration' ] ]
+
+    pintushi_security.listener.search_listener:
+          class: 'Pintushi\Bundle\SearchBundle\EventListener\SearchListener'
+          arguments:
+              - '@pintushi_security.owner.ownership_metadata_provider'
+          tags:
+              - { name: kernel.event_listener, event: pintushi_search.prepare_entity_map, method: prepareEntityMapEvent, priority: 100 }
+              - { name: kernel.event_listener, event: pintushi_search.search_mapping_collect, method: collectEntityMapEvent, priority: -100 }
+
+    pintushi_search.index_listener:
+        class: Pintushi\Bundle\SearchBundle\EventListener\IndexListener
+        arguments:
+            - '@pintushi_entity.doctrine_helper'
+            - '@pintushi_search.async.indexer'
+            - '@property_accessor'
+        calls:
+            - [setMappingProvider,  ['@pintushi_search.provider.search_mapping']]
+        tags:
+            - { name: doctrine.event_listener, event: onFlush }
+            - { name: doctrine.event_listener, event: postFlush }
+            - { name: doctrine.event_listener, event: onClear }
+
+    Pintushi\Bundle\SearchBundle\Async\Indexer:
+        class: 'Pintushi\Bundle\SearchBundle\Async\Indexer'
+        public: true
+        arguments:
+            - '@Enqueue\Client\ProducerInterface'
+            - '@pintushi_entity.doctrine_helper'
+            - '@pintushi_search.transformer.message'
+
+    pintushi_search.async.indexer: '@Pintushi\Bundle\SearchBundle\Async\Indexer'
+
+    pintushi_search.transformer.message:
+        class: Pintushi\Bundle\SearchBundle\Transformer\MessageTransformer
+        arguments:
+            - '@pintushi_entity.doctrine_helper'
+        public: false
+
+    pintushi_search.async.message_processor.index_entity:
+        class: 'Pintushi\Bundle\SearchBundle\Async\IndexEntityMessageProcessor'
+        arguments:
+            - '@pintushi_search.search.engine.indexer'
+            - '@doctrine'
+            - '@monolog.logger'
+        tags:
+            - { name: 'enqueue.topic_subscriber' }
+
+    pintushi_search.async.message_processor.index_entities_by_id:
+        class: 'Pintushi\Bundle\SearchBundle\Async\IndexEntitiesByIdMessageProcessor'
+        arguments:
+            - '@Enqueue\JobQueue\JobRunner'
+            - '@pintushi_entity.doctrine_helper'
+            - '@pintushi_search.search.engine.indexer'
+        calls:
+            - [setLogger,  ['@monolog.logger']]
+        tags:
+            - { name: 'enqueue.topic_subscriber' }
+
+    pintushi_search.async.message_processor.index_entities_by_type:
+        class: 'Pintushi\Bundle\SearchBundle\Async\IndexEntitiesByTypeMessageProcessor'
+        arguments:
+            - '@doctrine'
+            - '@Enqueue\JobQueue\JobRunner'
+            - '@Enqueue\Client\ProducerInterface'
+            - '@monolog.logger'
+        tags:
+            - { name: 'enqueue.topic_subscriber' }
+
+    pintushi_search.async.message_processor.index_entities_by_range:
+        class: 'Pintushi\Bundle\SearchBundle\Async\IndexEntitiesByRangeMessageProcessor'
+        arguments:
+            - '@doctrine'
+            - '@pintushi_search.search.engine.indexer'
+            - '@Enqueue\JobQueue\JobRunner'
+            - '@monolog.logger'
+        tags:
+            - { name: 'enqueue.topic_subscriber' }
+
+    pintushi_search.async.message_processor.reindex_entity:
+        class: 'Pintushi\Bundle\SearchBundle\Async\ReindexEntityMessageProcessor'
+        arguments:
+            - '@pintushi_search.search.engine.indexer'
+            - '@Enqueue\JobQueue\JobRunner'
+            - '@Enqueue\Client\ProducerInterface'
+        tags:
+            - { name: 'enqueue.topic_subscriber' }

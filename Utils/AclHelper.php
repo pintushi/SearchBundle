@@ -7,7 +7,7 @@ use Pintushi\Bundle\SearchBundle\Provider\SearchMappingProvider;
 use Pintushi\Bundle\SearchBundle\Query\Criteria\ExpressionBuilder;
 use Pintushi\Bundle\SearchBundle\Query\Query;
 use Pintushi\Bundle\SecurityBundle\Authentication\TokenAccessorInterface;
-use Pintushi\Bundle\SecurityBundle\EventListener\SearchListener;
+use Pintushi\Bundle\SearchBundle\EventListener\SearchListener;
 use Pintushi\Bundle\SecurityBundle\ORM\Walker\AclConditionDataBuilderInterface;
 use Pintushi\Bundle\SecurityBundle\Owner\Metadata\OwnershipMetadataProviderInterface;
 

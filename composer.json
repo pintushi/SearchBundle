@@ -11,6 +11,9 @@
         "pintushi/config-bundle": "^1.0@dev",
         "pintushi/security-bundle": "^1.0@dev",
         "pintushi/entity-bundle": "^1.0@dev",
+        "enqueue/enqueue-bundle": "^0.9.8",
+        "enqueue/fs": "^0.9.8",
+        "enqueue/job-queue": "^0.9.7",
         "nesbot/carbon": "^2.0"
     },
     "autoload": {

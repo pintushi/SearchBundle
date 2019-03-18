@@ -5,7 +5,7 @@ namespace Pintushi\Bundle\SearchBundle\Engine;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query\Expr\OrderBy;
-use Pintushi\Bundle\BatchBundle\ORM\Query\BufferedIdentityQueryResultIterator;
+use Oro\Bundle\BatchBundle\ORM\Query\BufferedIdentityQueryResultIterator;
 use Pintushi\Bundle\SecurityBundle\ORM\DoctrineHelper;
 use Pintushi\Bundle\EntityBundle\Provider\EntityNameResolver;
 use Pintushi\Bundle\SearchBundle\Query\Mode;

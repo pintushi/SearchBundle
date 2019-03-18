@@ -10,8 +10,9 @@ services:
 
     pintushi_search.search.engine.indexer:
         class: Pintushi\Bundle\SearchBundle\Engine\OrmIndexer
+        public: true
         arguments:
             - '@doctrine'
             - '@Pintushi\Bundle\SecurityBundle\ORM\DoctrineHelper'
-            - '@pintushi_search.text_filtered_mapper'
-            - '@oro_entity.entity_name_resolver'
+            - '@pintushi_search.mapper'
+            - '@Pintushi\Bundle\EntityBundle\Provider\EntityNameResolver'
