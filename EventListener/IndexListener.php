@@ -12,7 +12,6 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\PersistentCollection;
 use Doctrine\ORM\UnitOfWork;
 use Pintushi\Bundle\EntityBundle\ORM\DoctrineHelper;
-use Pintushi\Bundle\PlatformBundle\EventListener\OptionalListenerInterface;
 use Pintushi\Bundle\SearchBundle\Engine\IndexerInterface;
 use Pintushi\Bundle\SearchBundle\Provider\SearchMappingProvider;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
@@ -20,7 +19,7 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 /**
  * Doctrine event listener which collects changes and updates search index
  */
-class IndexListener implements OptionalListenerInterface
+class IndexListener
 {
     /**
      * @var DoctrineHelper

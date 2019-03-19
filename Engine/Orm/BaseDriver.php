@@ -814,6 +814,7 @@ abstract class BaseDriver implements DBALPersisterInterface
                 );
             } else {
                 $data['created_at'] = $now;
+
                 $connection->insert(
                     $table,
                     $data,
@@ -834,6 +835,7 @@ abstract class BaseDriver implements DBALPersisterInterface
     private function populateItem(AbstractItem $item)
     {
         $this->writeableItems[spl_object_hash($item)] = $item;
+
 
         if (!$this->writeableItemTypes) {
             $this->writeableItemTypes = [
