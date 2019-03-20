@@ -5,6 +5,8 @@ parameters:
         pdo_mysql: Pintushi\Bundle\SearchBundle\Engine\Orm\PdoMysql
         pdo_pgsql: Pintushi\Bundle\SearchBundle\Engine\Orm\PdoPgsql
     pintushi_search.provider.search_mapping.class: Pintushi\Bundle\SearchBundle\Provider\SearchMappingProvider
+    pintushi_search.event_listener.orm.fulltext_index_listener.class:  Pintushi\Bundle\SearchBundle\EventListener\ORM\FulltextIndexListener
+    pintushi_search.prepare_result_item.listener.class: Pintushi\Bundle\SearchBundle\EventListener\PrepareResultItemListener
 
 services:
     _defaults:
@@ -163,3 +165,23 @@ services:
             - '@Enqueue\Client\ProducerInterface'
         tags:
             - { name: 'enqueue.topic_subscriber' }
+
+    pintushi_search.event_listener.orm.fulltext_index_listener:
+        class: '%pintushi_search.event_listener.orm.fulltext_index_listener.class%'
+        arguments:
+            - 'pintushi_search_index_text'
+            - '@doctrine.dbal.default_connection'
+        tags:
+            - { name: doctrine.event_listener, event: loadClassMetadata, connection: search }
+
+    pintushi_search.prepare_result_item.listener:
+        class:  '%pintushi_search.prepare_result_item.listener.class%'
+        arguments:
+            - '@router'
+            - '@pintushi_search.mapper'
+            - '@doctrine.orm.entity_manager'
+            - '@pintushi_entity.entity_name_resolver'
+            - '@pintushi_entity_config.config_manager'
+            - '@translator'
+        tags:
+            - { name: kernel.event_listener, event: pintushi_search.prepare_result_item, method: process }

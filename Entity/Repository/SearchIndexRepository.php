@@ -51,7 +51,6 @@ class SearchIndexRepository extends EntityRepository implements DBALPersisterInt
      */
     public function search(Query $query)
     {
-        dump($query);
         return $this->getDriverRepo()->search($query);
     }
 

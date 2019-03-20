@@ -20,7 +20,6 @@ class PintushiSearchExtension extends Extension implements PrependExtensionInter
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-
         // load entity search configuration from search.yml files
         $ymlLoader = new YamlCumulativeFileLoader('Resources/config/app/search.yml');
         $configurationLoader = new CumulativeConfigLoader('pintushi_search', $ymlLoader);
