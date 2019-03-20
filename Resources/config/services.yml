@@ -172,7 +172,7 @@ services:
             - 'pintushi_search_index_text'
             - '@doctrine.dbal.default_connection'
         tags:
-            - { name: doctrine.event_listener, event: loadClassMetadata, connection: search }
+            - { name: doctrine.event_listener, event: loadClassMetadata, connection: default }
 
     pintushi_search.prepare_result_item.listener:
         class:  '%pintushi_search.prepare_result_item.listener.class%'
